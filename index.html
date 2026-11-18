@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isabel &mdash; Creative Developer &amp; Motion Designer</title>
+  <!-- Google Fonts: Architects Daughter, Caveat, Patrick Hand -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <style>
+    /* CSS Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --paper-cream: #FAF5EB;
+      --paper-dark: #F3EBD8;
+      --charcoal-black: #262422;
+      --crayon-purple: #783EA8;
+      --crayon-blue: #2F69A8;
+      --crayon-orange: #DF6C26;
+      --crayon-pink: #E05388;
+      --crayon-green: #378547;
+      --crayon-yellow: #E5A817;
+      --font-sketch: 'Architects Daughter', cursive, sans-serif;
+      --font-doodle: 'Caveat', cursive, sans-serif;
+      --font-hand: 'Patrick Hand', cursive, sans-serif;
+    }
+
+    body {
+      background-color: var(--paper-cream);
+      color: var(--charcoal-black);
+      font-family: var(--font-sketch);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      cursor: crosshair;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Sketchbook Paper Texture SVG Background */
+    .paper-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.42;
+      mix-blend-mode: multiply;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 0%, rgba(220,205,180,0.3) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.22'/%3E%3C/svg%3E");
+    }
+
+    /* Soft Studio Lighting & Paper Edge Vignette */
+    .studio-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 99;
+      box-shadow: inset 0 0 120px rgba(110, 80, 50, 0.16),
+                  inset 0 0 40px rgba(90, 60, 30, 0.1);
+    }
+
+    /* Main Container — Full Viewport Fit */
+    .hero-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.4rem 3rem 1.2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Navigation Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      position: relative;
+      z-index: 20;
+    }
+
+    /* Top Left: Logo */
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .logo-text {
+      font-size: clamp(2.2rem, 3.2vw, 2.7rem);
+      font-weight: 700;
+      color: var(--crayon-purple);
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 0px rgba(120, 62, 168, 0.3),
+                   -1px -0.5px 0px rgba(255, 255, 255, 0.6);
+      transform: rotate(-1.5deg);
+      display: inline-block;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .logo-container:hover .logo-text {
+      transform: rotate(1deg) scale(1.05);
+    }
+
+    .logo-doodle-sparkle {
+      position: absolute;
+      top: -10px;
+      right: -24px;
+      color: var(--crayon-yellow);
+      font-size: 1.4rem;
+      transform: rotate(15deg);
+    }
+
+    /* Top Right: Hand-sketched Navigation */
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-item {
+      position: relative;
+    }
+
+    .nav-link {
+      font-size: clamp(1.4rem, 1.8vw, 1.65rem);
+      text-decoration: none;
+      font-weight: bold;
+      letter-spacing: 1px;
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      position: relative;
+      transition: transform 0.18s ease;
+    }
+
+    .nav-link:hover {
+      transform: scale(1.12) rotate(-2deg);
+    }
+
+    /* Colored Crayon Styling for Nav Items */
+    .nav-item.about .nav-link {
+      color: var(--crayon-blue);
+      text-shadow: 0.5px 0.5px 0px rgba(47, 105, 168, 0.3);
+    }
+    .nav-item.projects .nav-link {
+      color: var(--crayon-orange);
+      text-shadow: 0.5px 0.5px 0px rgba(223, 108, 38, 0.3);
+    }
+    .nav-item.reels .nav-link {
+      color: var(--crayon-pink);
+      text-shadow: 0.5px 0.5px 0px rgba(224, 83, 136, 0.3);
+    }
+    .nav-item.contact .nav-link {
+      color: var(--crayon-green);
+      text-shadow: 0.5px 0.5px 0px rgba(55, 133, 71, 0.3);
+      border: 2px dashed rgba(55, 133, 71, 0.5);
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+      padding: 0.3rem 1rem;
+    }
+
+    .nav-item.contact .nav-link:hover {
+      background: rgba(55, 133, 71, 0.08);
+      border-style: solid;
+      transform: scale(1.08) rotate(1.5deg);
+    }
+
+    /* Banner Illustration Section */
+    .banner-section {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0.2rem;
+      margin-bottom: 0.3rem;
+      position: relative;
+    }
+
+    .illustration-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .banner-art {
+      width: 100%;
+      height: auto;
+      max-height: clamp(220px, 36vh, 370px);
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: contrast(1.03) brightness(0.99);
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform 0.3s ease;
+    }
+
+    .illustration-wrapper:hover .banner-art {
+      transform: scale(1.012);
+    }
+
+    /* Text Overlays & Architecture */
+    .site-content {
+      text-align: center;
+      position: relative;
+      margin-top: -0.1rem;
+      padding-bottom: 0.3rem;
+    }
+
+    .headline {
+      font-size: clamp(2.1rem, 3.2vw, 2.75rem);
+      font-weight: 700;
+      color: var(--charcoal-black);
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      text-shadow: 2px 2px 1px rgba(38, 36, 34, 0.25),
+                   -1px -1px 0px rgba(255, 255, 255, 0.5);
+      position: relative;
+      display: inline-block;
+      max-width: 950px;
+      margin-bottom: 0.45rem;
+    }
+
+    /* Charcoal Underline Scribble */
+    .headline::after {
+      content: '';
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: -4px;
+      height: 4px;
+      background: currentColor;
+      opacity: 0.45;
+      border-radius: 4px;
+      transform: rotate(-0.6deg);
+    }
+
+    .sub-headline {
+      font-size: clamp(1.15rem, 1.4vw, 1.35rem);
+      color: #4A4640;
+      font-family: var(--font-hand);
+      max-width: 780px;
+      margin: 0 auto;
+      line-height: 1.45;
+      letter-spacing: 0.5px;
+    }
+
+    .sub-headline .highlight-badge {
+      display: inline-block;
+      color: #B4341E;
+      background: rgba(229, 168, 23, 0.25);
+      padding: 0 0.4rem;
+      border-radius: 4px;
+      transform: rotate(-1deg);
+      font-weight: bold;
+    }
+
+    /* Bottom Row: Status & Tech Stack Easter Egg */
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 0.8rem;
+      position: relative;
+      z-index: 30;
+    }
+
+    /* Bottom Left: Availability indicator */
+    .freelance-status {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-doodle);
+      font-size: 1.3rem;
+      color: var(--crayon-green);
+      font-weight: bold;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background-color: var(--crayon-green);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(55, 133, 71, 0.25);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.7; }
+    }
+
+    /* Bottom Right: Tech Stack Easter Egg */
+    .tech-stack-egg {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      background: rgba(248, 243, 230, 0.7);
+      border: 1.5px dashed rgba(80, 70, 60, 0.35);
+      border-radius: 16px;
+      padding: 0.45rem 1rem;
+      transform: rotate(0.8deg);
+      transition: all 0.25s ease;
+    }
+
+    .tech-stack-egg:hover {
+      transform: rotate(-0.5deg) scale(1.04);
+      box-shadow: 3px 3px 0px rgba(60, 50, 40, 0.15);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .stack-prompt {
+      font-family: var(--font-doodle);
+      font-size: 1.2rem;
+      color: #6C665D;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .stack-prompt svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .stack-doodles {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stack-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .stack-icon-wrap {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .stack-item:hover .stack-icon-wrap {
+      transform: translateY(-3px) scale(1.15);
+    }
+
+    .stack-item span {
+      font-family: var(--font-hand);
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    /* Tech Stack Colors */
+    .stack-item.astro { color: #FF5D01; }
+    .stack-item.tailwind { color: #0EA5E9; }
+    .stack-item.framer { color: #A855F7; }
+
+    /* Responsive Queries */
+    @media (max-width: 900px) {
+      .hero-container {
+        padding: 1.2rem 1.2rem;
+      }
+      .nav-menu {
+        gap: 1.1rem;
+      }
+      .bottom-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Realistic Paper Grain Texture Overlay -->
+  <div class="paper-canvas"></div>
+  <div class="studio-vignette"></div>
+
+  <main class="hero-container">
+    <!-- Top Header: Logo + Nav Menu -->
+    <header>
+      <a href="#" class="logo-container" title="Isabel Portfolio">
+        <span class="logo-text">ISABEL</span>
+        <span class="logo-doodle-sparkle">✦</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li class="nav-item about"><a href="#about" class="nav-link">About</a></li>
+          <li class="nav-item projects"><a href="#projects" class="nav-link">Projects</a></li>
+          <li class="nav-item reels"><a href="#reels" class="nav-link">Reels</a></li>
+          <li class="nav-item contact"><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Upper 2/3: Handcrafted Banner Illustration (Original artwork as provided) -->
+    <section class="banner-section">
+      <div class="illustration-wrapper">
+        <img 
+          src="banner_illustration.jpg" 
+          alt="Colored pencil and crayon illustration of Isabel resting her head on her stacked hands with starry doodles and bows" 
+          class="banner-art"
+        />
+      </div>
+    </section>
+
+    <!-- Lower 1/3: Site Architecture & Charcoal Typography -->
+    <section class="site-content">
+      <h1 class="headline">Creative Developer &amp; Motion Designer.</h1>
+      <p class="sub-headline">
+        Crafting immersive digital experiences with 
+        <span class="highlight-badge">Astro</span>, 
+        <span class="highlight-badge">Tailwind</span>, and 
+        <span class="highlight-badge">Framer Motion</span>. 
+        Currently available for freelance opportunities.
+      </p>
+    </section>
+
+    <!-- Bottom Row: Availability Status & Easter Egg -->
+    <footer class="bottom-row">
+      <div class="freelance-status">
+        <span class="status-dot"></span>
+        <span>Open for freelance projects &amp; collaborations</span>
+      </div>
+
+      <!-- Easter Egg: Hand-Drawn Colored-Pencil Tech Stack Logos -->
+      <aside class="tech-stack-egg" title="Tactile Tech Stack Easter Egg">
+        <div class="stack-prompt">
+          <span>built with</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <div class="stack-doodles">
+          <!-- Astro Doodle -->
+          <a class="stack-item astro" href="https://astro.build" target="_blank" rel="noreferrer" title="Astro">
+            <div class="stack-icon-wrap">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+                <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                <path d="M9 12H4s.55-3.03 2-4.5c1.45-1.47 4.5-2 4.5-2"/>
+                <path d="M15 9v5s3.03-.55 4.5-2c1.47-1.45 2-4.5 2-4.5"/>
+              </svg>
+            </div>
+            <span>Astro</span>
+          </a>
+
+          <!-- Tailwind CSS Doodle -->
+          <a class="stack-item tailwind" href="https://tailwindcss.com" target="_blank" rel="noreferrer" title="Tailwind CSS">
+            <div class="stack-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 10c1.5-2.5 3.5-3 5.5-1.5 2 1.5 3.5 2 5.5 0.5 1.5-1.2 2.5-3 2.5-3"/>
+                <path d="M3 15c1.5-2.5 3.5-3 5.5-1.5 2 1.5 3.5 2 5.5 0.5 1.5-1.2 2.5-3 2.5-3"/>
+              </svg>
+            </div>
+            <span>Tailwind</span>
+          </a>
+
+          <!-- Framer Motion Doodle -->
+          <a class="stack-item framer" href="https://www.framer.com/motion/" target="_blank" rel="noreferrer" title="Framer Motion">
+            <div class="stack-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 3h16v7H12l8 7h-8v4l-8-7h8V3z"/>
+              </svg>
+            </div>
+            <span>Motion</span>
+          </a>
+        </div>
+      </aside>
+    </footer>
+  </main>
+
+  <script>
+    // Playful doodle micro-interactions
+    document.querySelectorAll('.nav-link, .stack-item').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        const randomDeg = (Math.random() * 3 - 1.5).toFixed(1);
+        el.style.transform = `scale(1.08) rotate(${randomDeg}deg)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>
